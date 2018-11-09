@@ -12,13 +12,42 @@ var myPromise = new Promise(function(resolve, reject) {
     //after 3s run the code inside setTimeout
     setTimeout(function() {
         console.log("OH! Hey")
-        resolve();
-    }, 3000)
+        //promises resolve with some kind of value!
+        resolve(50);
+        //they can also be rejected with some kind of error value
+        // reject("ooooops");
+    }, 1000)
 });
 
 
 //.then is a function you call off of promise, pass callbacks to .then
 //waits until promise is resolved to run the callbacks
-myPromise.then(function(){
+myPromise.then(function(result) {
     console.log("the promise resolved");
+    console.log("the result was " + result);
+}).catch(function(error) {
+    console.log(error);
 });
+
+var axiosPromise = axios.get("https://dog.ceo/api/breed/beagle/images/random");
+
+axiosPromise.then(function(result) {
+    console.log("the first dog is" + result.data.message);
+    //another promise!
+    return axios.get("https://dog.ceo/api/breed/beagle/images/random");
+}).then(function(otherResult) {
+    console.log("the next dog is " + otherResult.data.message);
+}).catch(function(error) {
+    console.log(error);
+});
+
+var dog1 = axios.get("https://dog.ceo/api/breed/beagle/images/random");
+var dog2 = axios.get("https://dog.ceo/api/breed/beagle/images/random");
+var dog3 = axios.get("https://dog.ceo/api/breed/beagle/images/random");
+
+//takes an array of promises
+Promise.all([dog1, dog2, dog3]).then(function(responses) {
+    //once ALL resolve then the .then will run
+    console.log(responses);
+});
+
